@@ -16,6 +16,7 @@ class FileBrowserActivity final : public Activity {
   ButtonNavigator buttonNavigator;
 
   size_t selectorIndex = 0;
+  bool pickerMode = false;  // When true, selecting a file returns its path instead of opening it
 
   // Files state
   std::string basepath = "/";
@@ -26,8 +27,11 @@ class FileBrowserActivity final : public Activity {
   size_t findEntry(const std::string& name) const;
 
  public:
-  explicit FileBrowserActivity(GfxRenderer& renderer, MappedInputManager& mappedInput, std::string initialPath = "/")
-      : Activity("FileBrowser", renderer, mappedInput), basepath(initialPath.empty() ? "/" : std::move(initialPath)) {}
+  explicit FileBrowserActivity(GfxRenderer& renderer, MappedInputManager& mappedInput, std::string initialPath = "/",
+                               bool pickerMode = false)
+      : Activity("FileBrowser", renderer, mappedInput),
+        pickerMode(pickerMode),
+        basepath(initialPath.empty() ? "/" : std::move(initialPath)) {}
   void onEnter() override;
   void onExit() override;
   void loop() override;

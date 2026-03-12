@@ -35,6 +35,11 @@ inline const std::vector<SettingInfo>& getSettingsList() {
                         StrId::STR_CAT_DISPLAY),
       SettingInfo::Toggle(StrId::STR_SUNLIGHT_FADING_FIX, &CrossPointSettings::fadingFix, "fadingFix",
                           StrId::STR_CAT_DISPLAY),
+      SettingInfo::Enum(StrId::STR_HOME_COVER_MODE, &CrossPointSettings::homeCoverMode,
+                        {StrId::STR_HOME_COVER_RECENT, StrId::STR_HOME_COVER_FEATURED}, "homeCoverMode",
+                        StrId::STR_CAT_DISPLAY),
+      SettingInfo::String(StrId::STR_SELECT_FEATURED_BOOK, SETTINGS.featuredBookPath,
+                          sizeof(SETTINGS.featuredBookPath), "featuredBookPath", StrId::STR_CAT_DISPLAY),
 
       // --- Reader ---
       SettingInfo::Enum(StrId::STR_FONT_FAMILY, &CrossPointSettings::fontFamily,

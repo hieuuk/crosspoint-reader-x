@@ -34,6 +34,7 @@ class HomeActivity final : public Activity {
   bool restoreCoverBuffer();  // Restore frame buffer from stored cover
   void freeCoverBuffer();     // Free the stored cover buffer
   void loadRecentBooks(int maxBooks);
+  void loadFeaturedBook();
   void loadRecentCovers(int coverHeight);
 
  public:

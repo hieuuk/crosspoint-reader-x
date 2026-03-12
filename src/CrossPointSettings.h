@@ -134,6 +134,9 @@ class CrossPointSettings {
   // UI Theme
   enum UI_THEME { CLASSIC = 0, LYRA = 1, LYRA_3_COVERS = 2 };
 
+  // Home cover display mode
+  enum HOME_COVER_MODE { HOME_RECENT = 0, HOME_FEATURED = 1, HOME_COVER_MODE_COUNT };
+
   // Image rendering in EPUB reader
   enum IMAGE_RENDERING { IMAGES_DISPLAY = 0, IMAGES_PLACEHOLDER = 1, IMAGES_SUPPRESS = 2, IMAGE_RENDERING_COUNT };
 
@@ -206,6 +209,10 @@ class CrossPointSettings {
   uint8_t showHiddenFiles = 0;
   // Image rendering mode in EPUB reader
   uint8_t imageRendering = IMAGES_DISPLAY;
+  // Home screen cover display mode (0 = recent, 1 = featured)
+  uint8_t homeCoverMode = HOME_RECENT;
+  // Featured book path (for HOME_FEATURED mode)
+  char featuredBookPath[256] = "";
 
   ~CrossPointSettings() = default;
 

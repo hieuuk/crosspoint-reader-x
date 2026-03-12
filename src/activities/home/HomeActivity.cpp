@@ -53,6 +53,18 @@ void HomeActivity::loadRecentBooks(int maxBooks) {
   }
 }
 
+void HomeActivity::loadFeaturedBook() {
+  recentBooks.clear();
+
+  const std::string path = SETTINGS.featuredBookPath;
+  if (path.empty() || !Storage.exists(path.c_str())) {
+    return;
+  }
+
+  RecentBook featured = RECENT_BOOKS.getDataFromBook(path);
+  recentBooks.push_back(std::move(featured));
+}
+
 void HomeActivity::loadRecentCovers(int coverHeight) {
   recentsLoading = true;
   bool showingLoading = false;
@@ -121,7 +133,12 @@ void HomeActivity::onEnter() {
   selectorIndex = 0;
 
   const auto& metrics = UITheme::getInstance().getMetrics();
-  loadRecentBooks(metrics.homeRecentBooksCount);
+
+  if (SETTINGS.homeCoverMode == CrossPointSettings::HOME_FEATURED && strlen(SETTINGS.featuredBookPath) > 0) {
+    loadFeaturedBook();
+  } else {
+    loadRecentBooks(metrics.homeRecentBooksCount);
+  }
 
   // Trigger first update
   requestUpdate();

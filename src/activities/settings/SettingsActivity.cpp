@@ -13,6 +13,8 @@
 #include "OtaUpdateActivity.h"
 #include "SettingsList.h"
 #include "StatusBarSettingsActivity.h"
+#include "activities/ActivityResult.h"
+#include "activities/home/FileBrowserActivity.h"
 #include "activities/network/WifiSelectionActivity.h"
 #include "components/UITheme.h"
 #include "fontIds.h"
@@ -44,6 +46,7 @@ void SettingsActivity::onEnter() {
   }
 
   // Append device-only ACTION items
+  displaySettings.push_back(SettingInfo::Action(StrId::STR_SELECT_FEATURED_BOOK, SettingAction::SelectFeaturedBook));
   controlsSettings.insert(controlsSettings.begin(),
                           SettingInfo::Action(StrId::STR_REMAP_FRONT_BUTTONS, SettingAction::RemapFrontButtons));
   systemSettings.push_back(SettingInfo::Action(StrId::STR_WIFI_NETWORKS, SettingAction::Network));
@@ -191,6 +194,20 @@ void SettingsActivity::toggleCurrentSetting() {
         break;
       case SettingAction::Language:
         startActivityForResult(std::make_unique<LanguageSelectActivity>(renderer, mappedInput), resultHandler);
+        break;
+      case SettingAction::SelectFeaturedBook:
+        startActivityForResult(
+            std::make_unique<FileBrowserActivity>(renderer, mappedInput, "/", true),
+            [this](const ActivityResult& res) {
+              if (!res.isCancelled) {
+                auto* fileResult = std::get_if<FilePickerResult>(&res.data);
+                if (fileResult) {
+                  strncpy(SETTINGS.featuredBookPath, fileResult->path.c_str(), sizeof(SETTINGS.featuredBookPath) - 1);
+                  SETTINGS.featuredBookPath[sizeof(SETTINGS.featuredBookPath) - 1] = '\0';
+                  SETTINGS.saveToFile();
+                }
+              }
+            });
         break;
       case SettingAction::None:
         // Do nothing

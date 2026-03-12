@@ -1,6 +1,7 @@
 #include "FileBrowserActivity.h"
 
 #include <Epub.h>
+#include "activities/ActivityResult.h"
 #include <FsHelpers.h>
 #include <GfxRenderer.h>
 #include <HalStorage.h>
@@ -186,6 +187,9 @@ void FileBrowserActivity::loop() {
         loadFiles();
         selectorIndex = 0;
         requestUpdate();
+      } else if (pickerMode) {
+        setResult(FilePickerResult{basepath + entry});
+        finish();
       } else {
         onSelectBook(basepath + entry);
       }
