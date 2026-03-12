@@ -110,6 +110,7 @@ void FileBrowserActivity::onEnter() {
 
   loadFiles();
   selectorIndex = 0;
+  inputReady = false;
 
   requestUpdate();
 }
@@ -128,6 +129,14 @@ void FileBrowserActivity::clearFileMetadata(const std::string& fullPath) {
 }
 
 void FileBrowserActivity::loop() {
+  // Skip first loop to consume any stale button events from the launching activity
+  if (!inputReady) {
+    if (!mappedInput.isPressed(MappedInputManager::Button::Confirm)) {
+      inputReady = true;
+    }
+    return;
+  }
+
   // Long press BACK (1s+) goes to root folder
   if (mappedInput.isPressed(MappedInputManager::Button::Back) && mappedInput.getHeldTime() >= GO_HOME_MS &&
       basepath != "/") {

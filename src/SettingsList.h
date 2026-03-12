@@ -38,8 +38,9 @@ inline const std::vector<SettingInfo>& getSettingsList() {
       SettingInfo::Enum(StrId::STR_HOME_COVER_MODE, &CrossPointSettings::homeCoverMode,
                         {StrId::STR_HOME_COVER_RECENT, StrId::STR_HOME_COVER_FEATURED}, "homeCoverMode",
                         StrId::STR_CAT_DISPLAY),
+      // featuredBookPath: web-only (set via device file picker action in SettingsActivity)
       SettingInfo::String(StrId::STR_SELECT_FEATURED_BOOK, SETTINGS.featuredBookPath,
-                          sizeof(SETTINGS.featuredBookPath), "featuredBookPath", StrId::STR_CAT_DISPLAY),
+                          sizeof(SETTINGS.featuredBookPath), "featuredBookPath", StrId::STR_NONE_OPT),
 
       // --- Reader ---
       SettingInfo::Enum(StrId::STR_FONT_FAMILY, &CrossPointSettings::fontFamily,

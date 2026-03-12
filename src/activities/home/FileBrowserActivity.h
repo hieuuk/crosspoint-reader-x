@@ -16,7 +16,8 @@ class FileBrowserActivity final : public Activity {
   ButtonNavigator buttonNavigator;
 
   size_t selectorIndex = 0;
-  bool pickerMode = false;  // When true, selecting a file returns its path instead of opening it
+  bool pickerMode = false;   // When true, selecting a file returns its path instead of opening it
+  bool inputReady = false;   // Guards against stale button events on first loop
 
   // Files state
   std::string basepath = "/";
