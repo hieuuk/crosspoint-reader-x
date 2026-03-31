@@ -17,6 +17,7 @@
 #include "EpubReaderPercentSelectionActivity.h"
 #include "KOReaderCredentialStore.h"
 #include "KOReaderSyncActivity.h"
+#include "TruyenJsSyncActivity.h"
 #include "MappedInputManager.h"
 #include "QrDisplayActivity.h"
 #include "ReaderUtils.h"
@@ -381,23 +382,39 @@ void EpubReaderActivity::onReaderMenuConfirm(EpubReaderMenuActivity::MenuAction 
       break;
     }
     case EpubReaderMenuActivity::MenuAction::SYNC: {
-      if (KOREADER_STORE.hasCredentials()) {
-        const int currentPage = section ? section->currentPage : 0;
-        const int totalPages = section ? section->pageCount : 0;
+      const int currentPage = section ? section->currentPage : 0;
+      const int totalPages = section ? section->pageCount : 0;
+      auto syncCallback = [this](const ActivityResult& result) {
+        if (!result.isCancelled) {
+          const auto& sync = std::get<SyncResult>(result.data);
+          if (currentSpineIndex != sync.spineIndex || (section && section->currentPage != sync.page)) {
+            RenderLock lock(*this);
+            currentSpineIndex = sync.spineIndex;
+            if (sync.progressInSpine >= 0.0f) {
+              // TruyenJs sync: use progress ratio to position within chapter after render
+              pendingSpineProgress = sync.progressInSpine;
+              pendingPercentJump = true;
+              nextPageNumber = 0;
+            } else {
+              nextPageNumber = sync.page;
+            }
+            section.reset();
+          }
+        }
+      };
+
+      if (epub->hasSyncUrl()) {
+        // TruyenJs2 EPUB - use direct sync with TruyenJs2 server
+        startActivityForResult(
+            std::make_unique<TruyenJsSyncActivity>(renderer, mappedInput, epub, currentSpineIndex, currentPage,
+                                                   totalPages),
+            syncCallback);
+      } else if (KOREADER_STORE.hasCredentials()) {
+        // Standard EPUB - use KOReader sync
         startActivityForResult(
             std::make_unique<KOReaderSyncActivity>(renderer, mappedInput, epub, epub->getPath(), currentSpineIndex,
                                                    currentPage, totalPages),
-            [this](const ActivityResult& result) {
-              if (!result.isCancelled) {
-                const auto& sync = std::get<SyncResult>(result.data);
-                if (currentSpineIndex != sync.spineIndex || (section && section->currentPage != sync.page)) {
-                  RenderLock lock(*this);
-                  currentSpineIndex = sync.spineIndex;
-                  nextPageNumber = sync.page;
-                  section.reset();
-                }
-              }
-            });
+            syncCallback);
       }
       break;
     }

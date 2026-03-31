@@ -123,6 +123,9 @@ bool Epub::parseContentOpf(BookMetadataCache::BookMetadata& bookMetadata) {
   }
 
   bookMetadata.textReferenceHref = opfParser.textReferenceHref;
+  bookMetadata.identifier = opfParser.identifier;
+  bookMetadata.syncUrl = opfParser.syncUrl;
+  bookMetadata.bookPosition = opfParser.bookPosition;
 
   if (!opfParser.tocNcxPath.empty()) {
     tocNcxItem = opfParser.tocNcxPath;
@@ -514,6 +517,34 @@ const std::string& Epub::getLanguage() const {
   }
 
   return bookMetadataCache->coreMetadata.language;
+}
+
+const std::string& Epub::getIdentifier() const {
+  static std::string blank;
+  if (!bookMetadataCache || !bookMetadataCache->isLoaded()) {
+    return blank;
+  }
+  return bookMetadataCache->coreMetadata.identifier;
+}
+
+const std::string& Epub::getSyncUrl() const {
+  static std::string blank;
+  if (!bookMetadataCache || !bookMetadataCache->isLoaded()) {
+    return blank;
+  }
+  return bookMetadataCache->coreMetadata.syncUrl;
+}
+
+const std::string& Epub::getBookPosition() const {
+  static std::string blank;
+  if (!bookMetadataCache || !bookMetadataCache->isLoaded()) {
+    return blank;
+  }
+  return bookMetadataCache->coreMetadata.bookPosition;
+}
+
+bool Epub::hasSyncUrl() const {
+  return !getSyncUrl().empty() && !getIdentifier().empty();
 }
 
 std::string Epub::getCoverBmpPath(bool cropped) const {

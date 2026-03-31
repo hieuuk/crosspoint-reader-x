@@ -38,6 +38,7 @@ struct PageResult {
 struct SyncResult {
   int spineIndex = 0;
   int page = 0;
+  float progressInSpine = -1.0f;  // If >= 0, use this instead of page (for TruyenJs sync)
 };
 
 enum class NetworkMode;

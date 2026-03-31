@@ -17,6 +17,9 @@ class ContentOpfParser final : public Print {
     IN_BOOK_TITLE,
     IN_BOOK_AUTHOR,
     IN_BOOK_LANGUAGE,
+    IN_BOOK_IDENTIFIER,
+    IN_META_SYNC_URL,
+    IN_META_BOOK_POSITION,
     IN_MANIFEST,
     IN_SPINE,
     IN_GUIDE,
@@ -66,6 +69,10 @@ class ContentOpfParser final : public Print {
   std::string guideCoverPageHref;  // Guide reference with type="cover" or "cover-page" (points to XHTML wrapper)
   std::string textReferenceHref;
   std::vector<std::string> cssFiles;  // CSS stylesheet paths
+  // CrossPoint sync metadata
+  std::string identifier;    // dc:identifier
+  std::string syncUrl;       // crosspoint:syncUrl
+  std::string bookPosition;  // crosspoint:bookPosition
 
   explicit ContentOpfParser(const std::string& cachePath, const std::string& baseContentPath, const size_t xmlSize,
                             BookMetadataCache* cache)

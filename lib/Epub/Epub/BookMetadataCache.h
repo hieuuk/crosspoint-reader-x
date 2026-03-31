@@ -14,6 +14,10 @@ class BookMetadataCache {
     std::string language;
     std::string coverItemHref;
     std::string textReferenceHref;
+    // CrossPoint sync metadata (from TruyenJs2 EPUBs)
+    std::string identifier;     // dc:identifier (story ID)
+    std::string syncUrl;        // crosspoint:syncUrl
+    std::string bookPosition;   // crosspoint:bookPosition (for series)
   };
 
   struct SpineEntry {
